@@ -1,4 +1,4 @@
-## QNODE: Learning quantum dynamics using latent neural ODEs vers 2.0
+## QNODE: Learning quantum dynamics using latent neural ODEs vers 1
 https://arxiv.org/abs/2110.10721
 
 ## Abstract
