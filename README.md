@@ -17,9 +17,13 @@ The state of a qubit can be represented on a Bloch sphere
 Below you can see results in training process 
 
 ## Result
+# Loss & Elbo
 <p align="center">
-<img src="gifs/latentdynamsclosed.gif" width="250" height="250">
+<img src="graph.png" width="300" height="400">
 
+# Bloch Sphere Train & Test
+<img src="train.png" width="200" height="400">
+<img src="test.jpg" width="200" height="400">
 ## Review
-Now I have problems with model :  on 7500 epoch the ELBO can't decrease, so I try to fix it 
+Until now, we rewrite functions, dataset and model in order to increase quality of results
 
