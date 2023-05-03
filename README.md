@@ -19,7 +19,7 @@ Below you can see results in training process
 ## Result
 # Loss & Elbo
 <p align="center">
-<img src="graph.png" width="300" height="300">
+<img src="graph.png" width="900" height="300">
 
 # Bloch Sphere Train & Test
  <p align="center">
