@@ -19,12 +19,12 @@ Below you can see results in training process
 ## Result
 # Loss & Elbo
 <p align="center">
-<img src="graph.png" width="700" height="500">
+<img src="graph.png" width="300" height="300">
 
 # Bloch Sphere Train & Test
  <p align="center">
 <img src="train.png" width="250" height="250">
-<img src="test.jpg" width="250" height="250">
+<img src="test.jpg" width="300" height="250">
 </p>
 ## Review
 Until now, we rewrite functions, dataset and model in order to increase quality of results
