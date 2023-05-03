@@ -26,6 +26,7 @@ Below you can see results in training process
 <img src="train.png" width="250" height="250">
 <img src="test.jpg" width="300" height="250">
 </p>
+
 ## Review
 Until now, we rewrite functions, dataset and model in order to increase quality of results
 
