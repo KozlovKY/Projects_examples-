@@ -17,11 +17,11 @@ The state of a qubit can be represented on a Bloch sphere
 Below you can see results in training process 
 
 ## Result
-# Loss & Elbo
+### Loss & Elbo
 <p align="center">
 <img src="graph.png" width="900" height="300">
 
-# Bloch Sphere Train & Test
+### Bloch Sphere Train & Test
  <p align="center">
 <img src="train.png" width="250" height="250">
 <img src="test.jpg" width="300" height="250">
