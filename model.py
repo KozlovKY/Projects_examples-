@@ -3,19 +3,36 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torchdiffeq import odeint
-
+from dataloader import StochasticTwoLevelDataset
 def save_model(model, model_name):
     torch.save(model.func.state_dict(), './saved_models/{}_func.pt'.format(model_name))
     torch.save(model.dec.state_dict(), './saved_models/{}_dec.pt'.format(model_name))
-    torch.save(model.rec.state_dict(), 'saved_models/{}_rec.pt'.format(model_name))
+    torch.save(model.rec.state_dict(), './saved_models/{}_rec.pt'.format(model_name))
     torch.save(model.epsilon, './saved_models/{}_epsilon.pt'.format(model_name))
 
 def load_model(model, model_name):
-    model.func.load_state_dict(torch.load('./saved_models/{}_func.pt'.format(model_name)))
-    model.dec.load_state_dict(torch.load('./saved_models/{}_dec.pt'.format(model_name)))
-    model.rec.load_state_dict(torch.load('./saved_models/{}_rec.pt'.format(model_name)))
+    #print('./saved_models/{}_func.pt'.format(model_name))
+    #model.func.load_state_dict(torch.load('saved_models/trained_closed_3_6_48-48_fine_tuned_func.pt', map_location=torch.device('cpu')))
+    #model.dec.load_state_dict(torch.load('saved_models/trained_closed_3_6_48-48_fine_tuned_dec.pt', map_location=torch.device('cpu')))
+    #model.rec.load_state_dict(torch.load('saved_models/trained_closed_3_6_48-48_fine_tuned_rec.pt', map_location=torch.device('cpu')))
+    #try:
+        #model.epsilon = torch.load('saved_models/trained_closed_3_6_48-48_fine_tuned_epsilon.pt', map_location=torch.device('cpu'))
+    #except:
+        #pass
+    '''model.func.load_state_dict(
+        torch.load('saved_models/closed_6_48_48_0.004_func.pt', map_location=torch.device('cpu')))
+    model.dec.load_state_dict(torch.load('saved_models/closed_6_48_48_0.004_dec.pt', map_location=torch.device('cpu')))
+    model.rec.load_state_dict(torch.load('saved_models/closed_6_48_48_0.004_rec.pt', map_location=torch.device('cpu')))
     try:
-        model.epsilon = torch.load('./saved_models/{}_epsilon.pt'.format(model_name))
+        model.epsilon = torch.load('saved_models/closed_6_48_48_0.004_epsilon.pt', map_location=torch.device('cpu'))
+    except:
+        pass'''
+    model.func.load_state_dict(
+        torch.load('saved_models/trained_closed_3_6_48-48_fine_tuned_func.pt', map_location=torch.device('cpu')))
+    model.dec.load_state_dict(torch.load('saved_models/trained_closed_3_6_48-48_fine_tuned_dec.pt', map_location=torch.device('cpu')))
+    model.rec.load_state_dict(torch.load('saved_models/trained_closed_3_6_48-48_fine_tuned_rec.pt', map_location=torch.device('cpu')))
+    try:
+        model.epsilon = torch.load('saved_models/trained_closed_3_6_48-48_fine_tuned_epsilon.pt', map_location=torch.device('cpu'))
     except:
         pass
     model.func.eval()
@@ -28,9 +45,9 @@ def load(type):
         model = latent_ode(batch=1080, obs_dim=3, latent_dim=6, nhidden=53, rnn_nhidden=53, lr=0.007, beta=1, extra_decode=True)
         load_model(model, 'open_6_53_53_0.007')
     elif type == 'closed':
-        data = torch.load('saved_datasets/closed_6_48_48_0.004.pt') 
+        data = torch.load('saved_datasets/closed-0.pt', map_location=torch.device('cpu'))
         model = latent_ode(batch=1080, obs_dim=3, latent_dim=6, nhidden=48, rnn_nhidden=48, lr=0.004, extra_decode=True)
-        load_model(model, 'closed_6_48_48_0.004')
+        load_model(model, 'closed_6_48_48-0.004')
     elif type == 'two':
         data = torch.load('saved_datasets/two_8_170_170_0.002.pt') 
         model = latent_ode(batch=1080, obs_dim=4, latent_dim=8, nhidden=170, rnn_nhidden=170, lr=0.002, extra_decode=True)
@@ -120,17 +137,17 @@ def normal_kl(mu1, lv1, mu2, lv2):
     return kl
 
 class latent_ode:
-    def __init__(self, obs_dim=2, latent_dim=4, nhidden=20, rnn_nhidden=25, lr=1e-2, batch=1000, beta=1, extra_decode=False):
+    def __init__(self, obs_dim=3, latent_dim=6, nhidden=48, rnn_nhidden=48, lr=4e-3, batch=1080, beta=1, extra_decode=True):
         self.obs_dim = obs_dim
         self.latent_dim = latent_dim
         self.nhidden = nhidden
         self.rnn_nhidden = rnn_nhidden
         self.beta = beta
         self.epsilon = None
-
         self.func = LatentODEfunc(latent_dim, nhidden)
         self.rec = RecognitionRNN(latent_dim, obs_dim, rnn_nhidden, batch)
         self.dec = Decoder(latent_dim, obs_dim, nhidden, extra=extra_decode)
+
         self.params = (list(self.func.parameters()) + list(self.dec.parameters()) + list(self.rec.parameters()))
         self.lr = lr
         self.optimizer = optim.Adam(self.params, lr=self.lr)
@@ -140,6 +157,12 @@ class latent_ode:
         num_ts = ts.size(0)
         beta = self.beta
         for itr in range(1, num_epochs + 1):
+            '''i = 0
+            for name, param in self.func.named_parameters():
+                if param.requires_grad:
+                    i += 1
+                    if i == 1:
+                        print(name, param.data)'''
             self.optimizer.zero_grad()
             h = self.rec.initHidden()
             for t in reversed(range(num_ts)):
@@ -164,11 +187,11 @@ class latent_ode:
             loss = torch.mean(-logpx + analytic_kl, dim=0)
             loss.backward()
             self.optimizer.step()
-
+            av_mse, *_ = self.MSE(trajs, ts)
             if itr == num_epochs:
                 self.epsilon = epsilon
-
-            print('Epoch: {}, elbo: {:.4f}'.format(itr, loss))
+            print('Epoch: {}, mse: {:.4f}, loss: {:.4f}'.format(itr, av_mse, loss))
+            #print('Epoch: {}, elbo: {:.4f}'.format(itr, loss))
 
     def encode(self, trajs, ts, reconstruct=True):
         if (reconstruct):
@@ -224,4 +247,4 @@ class latent_ode:
         avg_mse = np.mean(mse_errors)
 
         return avg_mse, mse_errors
-    
+

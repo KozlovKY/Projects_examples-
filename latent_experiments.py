@@ -35,7 +35,7 @@ def construct_gif(xs, type='closed', title='', cols=[], cmap='viridis'):
         cols = cmap(range(len(xs)))
     images = []
     for i, x in enumerate(xs):
-        filename='temp_file.png'
+        filename = 'temp_file.png'
         plot_traj_bloch(x, type, filename, col=cols[i])
         images.append(imageio.imread('plots/{}_interpolate/{}'.format(type, filename)))
     imageio.mimsave('plots/{}_interpolate/{}.gif'.format(type, title), images, duration=0.5)

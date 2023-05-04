@@ -1,32 +1,73 @@
-## QNODE: Learning quantum dynamics using latent neural ODEs vers 1
+# QNODE: Learning quantum dynamics using latent neural ODEs
+
+**Learning quantum dynamics using latent neural ODEs**
+
+*Matthew Choi, Daniel Flam-Spepherd, Thi Ha Kyaw, Alán Aspuru-Guzik*
+
+https://journals.aps.org/pra/abstract/10.1103/PhysRevA.105.042403
+
 https://arxiv.org/abs/2110.10721
 
-## Abstract
-The  motivation of this project was written in the state above, few words about my work : 
-In this project I try to train QNODE on real experimental data, in order to obtain a model that can predict the dynamics of a qubits, the resulting density matrix can be used for other performance calculations.
-I wish I could use model for calculations on  two or  multiple qubits
-
-## Work
-In work i used the code in the state above, and increase some fragments.
-
-
-1. The initial step is - check model on one cubit 
-
-The state of a qubit can be represented on a Bloch sphere
-
-Below you can see results in training process 
-
-## Result
-### Loss & Elbo
+## Samples
 <p align="center">
-<img src="graph.png" width="900" height="300">
-
-### Bloch Sphere Train & Test
- <p align="center">
-<img src="train.png" width="250" height="250">
-<img src="test.jpg" width="300" height="250">
+<img src="gifs/closed-4.gif" width="250" height="250">
+<img src="gifs/closed-6.gif" width="250" height="250">
+<img src="gifs/open-7.gif" width="250" height="250">
+<img src="gifs/open-10.gif" width="250" height="250">
 </p>
 
-## Review
-Until now, we rewrite functions, dataset and model in order to increase quality of results
+## Latent Dynamics
+<p align="center">
+<img src="gifs/latentdynamsclosed.gif" width="250" height="250">
+<img src="gifs/latentdynamsopen.gif" width="250" height="250">
+</p>
 
+## Interpolations
+<p align="center">
+<img src="gifs/closed interpolate from 235-914.gif" width="250" height="250">
+<img src="gifs/open interpolate from 243-269.gif" width="250" height="250">
+</p>
+
+## Prerequisites
+
+| command | min. version |
+|:-:|:-:|
+| torchdiffeq  | 0.0.1 |
+| numpy  | 1.17.4  |
+| Pytorch  | 1.4.0 |
+| QuTip | 4.6.2  |
+| matplotlib  | 3.4.3  |
+| scikit-learn  | 0.23.1  |
+| imageio  | 2.6.1  |
+
+## Training Models
+
+run 
+```
+python3 train.py
+```
+
+To train a model with different hyperparameters:
+| command | argstype | meaning |
+|:-:|:-:|:-:|
+| --seed  | int | the torch and numpy random seed  |
+| --epochs  | int | numbers of iterations the model will run |
+| --type | str | either the `open` or `closed` dataset  |
+| --obs_dim  | int | input dimensions  |
+| --rnn_nhidden  | int | rnn layer size  |
+| --nhidden  | int | decoder layer size  |
+| --latent_dim  | int | latent space size |
+| --lr | float | learning rate  |
+
+Example: 
+```
+python3 train.py --seed 1 --epochs 5000 --lr 5e-3 --type closed
+```
+
+## Generating Results
+
+run 
+```
+./create_plots.sh
+```
+<sub><sup>Note: you might have to run `chmod +x create_plots.sh`</sup></sub>

@@ -10,7 +10,7 @@ def normalize(a):
 
 def get_state(theta, phi):
     ket0, ket1 = np.array([[1.],[0.]]), np.array([[0.],[1.]])
-    bloch_state = np.cos(theta/2) * ket0 + np.exp(np.complex(0, phi))*ket1
+    bloch_state = np.cos(theta/2) * ket0 + np.exp(complex(0, phi))*ket1
     return Qobj(bloch_state)
 
 def get_spherical(theta, phi):
