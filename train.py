@@ -16,10 +16,10 @@ parser.add_argument('--lr', type=float, default=0.004)
 args = parser.parse_args()
 
 def save_dataset(data, dataset_name):
-    torch.save(data, './saved_datasets/{}.pt'.format(dataset_name))
+    torch.save(data, 'saved_datasets/{}.pt'.format(dataset_name))
 
 def load_dataset(dataset_name):
-    return torch.load('./saved_datasets/{}.pt'.format(dataset_name))
+    return torch.load('saved_datasets/{}.pt'.format(dataset_name))
 
 if __name__ == "__main__":
     torch.manual_seed(args.seed)
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     ts = torch.from_numpy(data.train_time_steps).float()
     #model = latent_ode(obs_dim=args.obs_dim, latent_dim=args.latent_dim, nhidden=args.nhidden,
         #rnn_nhidden=args.rnn_nhidden, lr=args.lr, batch=data.train_expect_data.shape[0])
-    model = latent_ode(batch=1080, obs_dim=3, latent_dim=6, nhidden=48, rnn_nhidden=48, lr=0.00001, beta=1,
+    model = latent_ode(batch=1080, obs_dim=3, latent_dim=6, nhidden=48, rnn_nhidden=48, lr=1e-5, beta=1,
                        extra_decode=True)
     '''i = 0
     for name, param in model.func.named_parameters():
@@ -54,12 +54,6 @@ if __name__ == "__main__":
     except:
         pass
     ### fine-tune end
-    i = 0
-    for name, param in model.func.named_parameters():
-        if param.requires_grad:
-            i += 1
-            if i == 1:
-                print(name, param.data)
 
     model.train(trajs, ts, args.epochs)
-    save_model(model, 'trained_{}_{}_{}_{}-{}_fine_tuned'.format(args.type, args.obs_dim, args.latent_dim, args.rnn_nhidden, args.nhidden))
+    save_model(model, 'trained_{}_{}_{}_{}-{}_fine_tuned_old'.format(args.type, args.obs_dim, args.latent_dim, args.rnn_nhidden, args.nhidden))

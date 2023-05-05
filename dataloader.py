@@ -41,7 +41,7 @@ def final_states_to_numpy(states):
     return np.concatenate([state.full() for state in states], axis=-1)
 
 class StochasticTwoLevelDataset(Dataset):
-    def __init__(self, num_batches=30, batched_samples=6, validation_samples=10, start=0, stop=2, last=10, time_steps=300, mc_samples=250, dataset_type='closed'): 
+    def __init__(self, num_batches=30, batched_samples=6, validation_samples=10, start=0, stop=2, last=10, time_steps=300, mc_samples=250, dataset_type='closed'):
         self.total_time_steps = np.linspace(start, last, time_steps)
         self.initial_states, _, self.spherical = sample_initial_states(batched_samples, rand=True)
         self.validation_points = sample_initial_states(validation_samples, rand=False)
