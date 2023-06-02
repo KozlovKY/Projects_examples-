@@ -11,7 +11,7 @@ In work i used the code in the state above, and increase some fragments.
 
 - [x] The initial step is - check model on one cubit
 - [x] Check on one qubit with a noise
-- [x] Check on experimental data
+- [ ] Check on experimental data
 - [ ] Two qubit Model
 - [ ] Two Qubit experimental data
 The state of a qubit can be represented on a Bloch sphere
