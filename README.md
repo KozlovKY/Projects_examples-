@@ -10,8 +10,11 @@ I wish I could use model for calculations on  two or  multiple qubits
 In work i used the code in the state above, and increase some fragments.
 
 
-1. The initial step is - check model on one cubit  
-2. Check on one qubit with a noise
+-[x] The initial step is - check model on one cubit  
+-[x] Check on one qubit with a noise
+-[ ] Check on experimental data
+-[ ] Two qubit Model
+-[ ] Two Qubit experimental data
 
 The state of a qubit can be represented on a Bloch sphere
 
